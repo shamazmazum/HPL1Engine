@@ -222,8 +222,8 @@ namespace hpl {
 			SetWindowCaption(asWindowCaption);
 		}
 
-		Log(" Init Glee...");
-		if(GLeeInit())
+		Log(" Init Glew...");
+		if(glewInit() == GLEW_OK)
 		{
 			Log("OK\n");
 		}
@@ -343,116 +343,66 @@ namespace hpl {
 
 	int cLowLevelGraphicsSDL::GetCaps(eGraphicCaps aType)
 	{
-		switch(aType)
-		{
-		//Texture Rectangle
+		int lUnits, lStages;
+		float fMax;
+
+		switch(aType) {
 		case eGraphicCaps_TextureTargetRectangle:
-			{
-				return 1;//GLEE_ARB_texture_rectangle?1:0;
-			}
+			//Texture Rectangle
+			return 1;//GLEW_ARB_texture_rectangle?1:0;
 
-
-		//Vertex Buffer Object
 		case eGraphicCaps_VertexBufferObject:
-			{
-				return GLEE_ARB_vertex_buffer_object?1:0;
-			}
+			//Vertex Buffer Object
+			return GLEW_ARB_vertex_buffer_object? 1: 0;
 
-		//Two Sided Stencil
 		case eGraphicCaps_TwoSideStencil:
-			{
-				//DEBUG:
-				//return 0;
+			//Two Sided Stencil
+			return (GLEW_EXT_stencil_two_side || GLEW_ATI_separate_stencil)? 1: 0;
 
-				if(GLEE_EXT_stencil_two_side) return 1;
-				else if(GLEE_ATI_separate_stencil) return 1;
-				else return 0;
-			}
-
-		//Max Texture Image Units
 		case eGraphicCaps_MaxTextureImageUnits:
-			{
-				//DEBUG:
-				//return 2;
+			//Max Texture Image Units
+			glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS_ARB,(GLint *)&lUnits);
+			return lUnits;
 
-				int lUnits;
-				glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS_ARB,(GLint *)&lUnits);
-				return lUnits;
-			}
-
-		//Max Texture Coord Units
 		case eGraphicCaps_MaxTextureCoordUnits:
-			{
-				int lUnits;
-				glGetIntegerv(GL_MAX_TEXTURE_COORDS_ARB,(GLint *)&lUnits);
-				return lUnits;
-			}
-		//Texture Anisotropy
+			//Max Texture Coord Units
+			glGetIntegerv(GL_MAX_TEXTURE_COORDS_ARB,(GLint *)&lUnits);
+			return lUnits;
+
 		case eGraphicCaps_AnisotropicFiltering:
-			{
-				if(GLEE_EXT_texture_filter_anisotropic) return 1;
-				else return 0;
-			}
+			//Texture Anisotropy
+			return GLEW_EXT_texture_filter_anisotropic? 1: 0;
 
-		//Texture Anisotropy
 		case eGraphicCaps_MaxAnisotropicFiltering:
-			{
-				if(!GLEE_EXT_texture_filter_anisotropic) return 0;
+			//Texture Anisotropy
+			if (!GLEW_EXT_texture_filter_anisotropic) return 0;
+			glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT,&fMax);
+			return (int)fMax;
 
-				float fMax;
-				glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT,&fMax);
-				return (int)fMax;
-			}
-
-		//Multisampling
 		case eGraphicCaps_Multisampling:
-			{
-				if(GLEE_ARB_multisample) return 1;
-				return 0;
-			}
+			//Multisampling
+			return (GLEW_ARB_multisample)? 1: 0;
 
-
-		//GL Vertex program
 		case eGraphicCaps_GL_VertexProgram:
-			{
-				//Debbug:
-				//return 0;
+			//GL Vertex program
+			return (GLEW_ARB_vertex_program)? 1: 0;
 
-				if(GLEE_ARB_vertex_program) return 1;
-				else return 0;
-			}
-
-		//GL Fragment program
 		case eGraphicCaps_GL_FragmentProgram:
-			{
-				//Debbug:
-				//return 0;
+			//GL Fragment program
+			return (GLEW_ARB_fragment_program)? 1: 0;
 
-				if(GLEE_ARB_fragment_program) return 1;
-				else return 0;
-			}
-
-		//GL NV register combiners
 		case eGraphicCaps_GL_NVRegisterCombiners:
-			{
-				if(GLEE_NV_register_combiners) return 1;
-				else return 0;
-			}
+			//GL NV register combiners
+			return (GLEW_NV_register_combiners)? 1: 0;
 
-		//GL NV register combiners Max stages
 		case eGraphicCaps_GL_NVRegisterCombiners_MaxStages:
-			{
-				int lStages;
-				glGetIntegerv(GL_MAX_GENERAL_COMBINERS_NV,(GLint *)&lStages);
-				return lStages;
-			}
+			//GL NV register combiners Max stages
+			glGetIntegerv(GL_MAX_GENERAL_COMBINERS_NV,(GLint *)&lStages);
+			return lStages;
 
-		//GL ATI Fragment Shader
 		case eGraphicCaps_GL_ATIFragmentShader:
-			{
-				if(GLEE_ATI_fragment_shader) return 1;
-				else return 0;
-			}
+			//GL ATI Fragment Shader
+			return (GLEW_ATI_fragment_shader)? 1: 0;
 		}
 
 		return 0;
@@ -473,12 +423,12 @@ namespace hpl {
 	void cLowLevelGraphicsSDL::SetVsyncActive(bool abX)
 	{
 		#if defined(WIN32)
-		if(GLEE_WGL_EXT_swap_control)
+		if(GLEW_WGL_EXT_swap_control)
 		{
 			wglSwapIntervalEXT(abX ? 1 : 0);
 		}
 		#elif defined(__linux__)
-		if (GLEE_GLX_SGI_swap_control)
+		if (GLEW_GLX_SGI_swap_control)
 		{
 			glXSwapIntervalSGI(abX ? 1 : 0);
 		}
@@ -489,7 +439,7 @@ namespace hpl {
 
 	void cLowLevelGraphicsSDL::SetMultisamplingActive(bool abX)
 	{
-		if(!GLEE_ARB_multisample || mlMultisampling<=0) return;
+		if(!GLEW_ARB_multisample || mlMultisampling<=0) return;
 
 		if(abX)
 			glEnable(GL_MULTISAMPLE_ARB);
@@ -783,7 +733,7 @@ namespace hpl {
 			LastTarget = GetGLTextureTargetEnum(mpCurrentTexture[alUnit]->GetTarget());
 
 		//Check if multi texturing is supported.
-		if(GLEE_ARB_multitexture){
+		if(GLEW_ARB_multitexture){
 			glActiveTextureARB(GL_TEXTURE0_ARB + alUnit);
 		}
 
@@ -1102,7 +1052,7 @@ namespace hpl {
 
 	/*void cLowLevelGraphicsSDL::SetStencilTwoSideActive(bool abX)
 	{
-		if(GLEE_EXT_stencil_two_side)
+		if(GLEW_EXT_stencil_two_side)
 		{
 			glEnable(GL_STENCIL_TEST_TWO_SIDE_EXT);
 		}
@@ -1112,7 +1062,7 @@ namespace hpl {
 
 	void cLowLevelGraphicsSDL::SetStencilFace(eStencilFace aFace)
 	{
-		if(GLEE_EXT_stencil_two_side)
+		if(GLEW_EXT_stencil_two_side)
 		{
 			if(aFace == eStencilFace_Front) glActiveStencilFaceEXT(GL_FRONT);
 			else							glActiveStencilFaceEXT(GL_BACK);
@@ -1139,7 +1089,7 @@ namespace hpl {
 	void cLowLevelGraphicsSDL::SetStencil(eStencilFunc aFunc,int alRef, unsigned int aMask,
 					eStencilOp aFailOp,eStencilOp aZFailOp,eStencilOp aZPassOp)
 	{
-		if(GLEE_EXT_stencil_two_side)
+		if(GLEW_EXT_stencil_two_side)
 		{
 			//glDisable(GL_STENCIL_TEST_TWO_SIDE_EXT);//shouldn't be needed..
 			glActiveStencilFaceEXT(GL_FRONT);
@@ -1158,7 +1108,7 @@ namespace hpl {
 					eStencilOp aBackFailOp,eStencilOp aBackZFailOp,eStencilOp aBackZPassOp)
 	{
 		//Nvidia implementation
-		if(GLEE_EXT_stencil_two_side)
+		if(GLEW_EXT_stencil_two_side)
 		{
 			glEnable(GL_STENCIL_TEST_TWO_SIDE_EXT);
 
@@ -1176,7 +1126,7 @@ namespace hpl {
 						GetGLStencilOpEnum(aBackZPassOp));
 		}
 		//Ati implementation
-		else if(GLEE_ATI_separate_stencil)
+		else if(GLEW_ATI_separate_stencil)
 		{
 			//Front
 			glStencilOpSeparateATI( GL_FRONT, GetGLStencilOpEnum(aFrontFailOp),
@@ -1200,7 +1150,7 @@ namespace hpl {
 
 	void cLowLevelGraphicsSDL::SetStencilTwoSide(bool abX)
 	{
-		if(GLEE_EXT_stencil_two_side)
+		if(GLEW_EXT_stencil_two_side)
 		{
 			glDisable(GL_STENCIL_TEST_TWO_SIDE_EXT);
 		}
@@ -1259,7 +1209,7 @@ namespace hpl {
 	void cLowLevelGraphicsSDL::SetBlendFuncSeparate(eBlendFunc aSrcFactorColor, eBlendFunc aDestFactorColor,
 		eBlendFunc aSrcFactorAlpha, eBlendFunc aDestFactorAlpha)
 	{
-		if(GLEE_EXT_blend_func_separate)
+		if(GLEW_EXT_blend_func_separate)
 		{
 			glBlendFuncSeparateEXT(GetGLBlendEnum(aSrcFactorColor),
 								GetGLBlendEnum(aDestFactorColor),
@@ -2081,14 +2031,14 @@ namespace hpl {
 
 	void cLowLevelGraphicsSDL::InitCG()
 	{
-		mCG_Context = cgCreateContext();
+		mCG_Context = 0; //cgCreateContext();
 	}
 
 	//-----------------------------------------------------------------------
 
 	void cLowLevelGraphicsSDL::ExitCG()
 	{
-		cgDestroyContext(mCG_Context);
+		// cgDestroyContext(mCG_Context);
 	}
 
 	//-----------------------------------------------------------------------

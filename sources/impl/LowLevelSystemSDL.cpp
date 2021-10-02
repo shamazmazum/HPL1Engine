@@ -28,11 +28,12 @@
 
 #ifndef WIN32
 // Include FLTK
-#include "FL/fl_ask.H"
+//#include "FL/fl_ask.H"
 #endif
 
 #define _UNICODE
 
+#include <unistd.h>
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>
@@ -112,7 +113,7 @@ namespace hpl {
 
 		if(mpFile)
 		{
-			fprintf(mpFile, asMessage.c_str());
+			fprintf(mpFile, "%s", asMessage.c_str());
 			fflush(mpFile);
 		}
 	}
@@ -449,7 +450,9 @@ namespace hpl {
 		sMess += asCaption;
 		sMess +=_W("\n\n");
 		sMess += text;
-		fl_alert("%ls\n\n%ls",asCaption,text);
+		//fl_alert("%ls\n\n%ls",asCaption,text);
+		// XXX
+        printf ("%ls: %ls", asCaption, text);
 		#endif
 	}
 

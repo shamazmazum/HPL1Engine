@@ -62,9 +62,11 @@ namespace hpl {
 		mpGui = apGui;
 		msName = asName;
 
+		// XXX
+		cVector3f filler(0, 0, 0);
 		mvGfxElements.resize(eGuiSkinGfx_LastEnum, NULL);
 		mvFonts.resize(eGuiSkinFont_LastEnum, NULL);
-		mvAttributes.resize(eGuiSkinAttribute_LastEnum, NULL);
+		mvAttributes.resize(eGuiSkinAttribute_LastEnum, filler);
 	}
 
 	//-----------------------------------------------------------------------

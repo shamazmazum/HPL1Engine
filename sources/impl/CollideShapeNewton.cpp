@@ -58,23 +58,29 @@ namespace hpl {
 
 		switch(aType)
 		{
-		case eCollideShapeType_Null:		mpNewtonCollision = NewtonCreateNull(apNewtonWorld); break;
-
-		case eCollideShapeType_Box:			mpNewtonCollision = NewtonCreateBox(apNewtonWorld,
+		case eCollideShapeType_Null:
+			mpNewtonCollision = NewtonCreateNull(apNewtonWorld);
+			break;
+		case eCollideShapeType_Box:
+			mpNewtonCollision = NewtonCreateBox(apNewtonWorld,
 												mvSize.x, mvSize.y, mvSize.z,
-												pMtx); break;
-
-		case eCollideShapeType_Sphere:		mpNewtonCollision = NewtonCreateSphere(apNewtonWorld,
-												mvSize.x, mvSize.y, mvSize.z,
-												pMtx); break;
-
-		case eCollideShapeType_Cylinder:	mpNewtonCollision = NewtonCreateCylinder(apNewtonWorld,
-												mvSize.x, mvSize.y,
-												pMtx); break;
-
-		case eCollideShapeType_Capsule:		mpNewtonCollision = NewtonCreateCapsule(apNewtonWorld,
-												mvSize.x, mvSize.y,
-												pMtx); break;
+												0, pMtx);
+			break;
+		case eCollideShapeType_Sphere:
+			mpNewtonCollision = NewtonCreateSphere(apNewtonWorld,
+												   mvSize.x, mvSize.y, mvSize.z,
+												   0, pMtx);
+			break;
+		case eCollideShapeType_Cylinder:
+			mpNewtonCollision = NewtonCreateCylinder(apNewtonWorld,
+													 mvSize.x, mvSize.y,
+													 0, pMtx);
+			break;
+		case eCollideShapeType_Capsule:
+			mpNewtonCollision = NewtonCreateCapsule(apNewtonWorld,
+													mvSize.x, mvSize.y,
+													0, pMtx);
+			break;
 		}
 
 		////////////////////////////////////////////
@@ -236,7 +242,7 @@ namespace hpl {
 		}
 
 		mpNewtonCollision = NewtonCreateCompoundCollision(mpNewtonWorld, (int)vNewtonColliders.size(),
-															&vNewtonColliders[0]);
+														  &vNewtonColliders[0], 0);
 
 		// Create bounding volume
 		cVector3f vFinalMax = avShapes[0]->GetBoundingVolume().GetMax();
@@ -272,7 +278,7 @@ namespace hpl {
 		bool bCreatedPlane = false;
 		cPlanef plane;
 
-		mpNewtonCollision = NewtonCreateTreeCollision(mpNewtonWorld, NULL);
+		mpNewtonCollision = NewtonCreateTreeCollision(mpNewtonWorld, 0);
 		//Log("-- Creating mesh collision.:\n");
 		NewtonTreeCollisionBeginBuild(mpNewtonCollision);
 		for(int tri = 0; tri < alIndexNum; tri+=3)

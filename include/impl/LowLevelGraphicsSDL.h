@@ -19,10 +19,7 @@
 #ifndef HPL_LOWLEVELGRAPHICS_SDL_H
 #define HPL_LOWLEVELGRAPHICS_SDL_H
 
-#include <GL/GLee.h>
-
-#include <Cg/cg.h>
-#include <Cg/cgGL.h>
+#include <GL/glew.h>
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
@@ -31,6 +28,7 @@
 
 #include "graphics/LowLevelGraphics.h"
 #include "impl/SDLPixelFormat.h"
+#include "impl/CGProgram.h" // Stub types
 #include "math/MathTypes.h"
 
 

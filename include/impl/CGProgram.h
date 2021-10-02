@@ -19,14 +19,16 @@
 #ifndef HPL_CGPROGRAM_H
 #define HPL_CGPROGRAM_H
 
-//#include <windows.h>
-#include <GL/GLee.h>
-#include <Cg/cg.h>
-#include <Cg/cgGL.h>
-
 #include "system/SystemTypes.h"
 #include "math/MathTypes.h"
 #include "graphics/GPUProgram.h"
+
+// This file is a stub
+typedef int CGcontext;
+typedef int CGprogram;
+typedef int CGprofile;
+typedef void *CGparameter;
+typedef int CGtype;
 
 namespace hpl {
 

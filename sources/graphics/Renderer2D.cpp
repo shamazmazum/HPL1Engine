@@ -895,13 +895,17 @@ namespace hpl {
 			//MAYBE TODO: Fix so that the shadows from different edges share vertices
 
 			// Add vertexes and indexes to the vertex batcher
-			mpLowLevelGraphics->AddVertexToBatch(&cVertex(vPointPos[0],ShadowColor));
-			mpLowLevelGraphics->AddVertexToBatch(&cVertex(vPointPos[1],ShadowColor));
+			cVertex point_pos0(vPointPos[0],ShadowColor);
+			cVertex point_pos1(vPointPos[1],ShadowColor);
+			cVertex end_pos0(vEndPos[0],ShadowColor);
+			cVertex end_pos1(vEndPos[1],ShadowColor);
+			mpLowLevelGraphics->AddVertexToBatch(&point_pos0);
+			mpLowLevelGraphics->AddVertexToBatch(&point_pos1);
 			mpLowLevelGraphics->AddIndexToBatch(lFirstIndex);
 			mpLowLevelGraphics->AddIndexToBatch(lFirstIndex+1);
 
-			mpLowLevelGraphics->AddVertexToBatch(&cVertex(vEndPos[0],ShadowColor));
-			mpLowLevelGraphics->AddVertexToBatch(&cVertex(vEndPos[1],ShadowColor));
+			mpLowLevelGraphics->AddVertexToBatch(&end_pos0);
+			mpLowLevelGraphics->AddVertexToBatch(&end_pos1);
 			mpLowLevelGraphics->AddIndexToBatch(lFirstIndex+2);
 
 			mpLowLevelGraphics->AddIndexToBatch(lFirstIndex+1);
@@ -920,7 +924,8 @@ namespace hpl {
 
 			//If we had an extra point one for triangle is needed.
 			if(bExtraPos){
-				mpLowLevelGraphics->AddVertexToBatch(&cVertex(vExtraPos,ShadowColor));
+				cVertex extra_pos(vExtraPos,ShadowColor);
+				mpLowLevelGraphics->AddVertexToBatch(&extra_pos);
 
 				mpLowLevelGraphics->AddIndexToBatch(lFirstIndex+3);
 				mpLowLevelGraphics->AddIndexToBatch(lFirstIndex+2);

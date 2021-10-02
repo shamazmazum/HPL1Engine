@@ -101,7 +101,8 @@ namespace hpl {
 		if(cPhysicsBodyNewton::mbUseCallback==false) return;
 
 		cPhysicsBodyNewton *pRigidBody = static_cast<cPhysicsBodyNewton*>(apEntity);
-		NewtonBodySetMatrix(pRigidBody->mpNewtonBody, &apEntity->GetLocalMatrix().GetTranspose().m[0][0]);
+		cMatrixf mtx = apEntity->GetLocalMatrix().GetTranspose();
+		NewtonBodySetMatrix(pRigidBody->mpNewtonBody, &mtx.m[0][0]);
 
 		if(pRigidBody->mpNode) pRigidBody->mpNode->SetMatrix(apEntity->GetLocalMatrix());
 	}
@@ -300,16 +301,16 @@ namespace hpl {
 														vMassCentre);
 
 			cVector3f vWorldPosition = GetWorldPosition() + vCentreOffset;
-			NewtonAddBodyImpulse(mpNewtonBody, avImpulse.v, vWorldPosition.v);
+			NewtonBodyAddImpulse(mpNewtonBody, avImpulse.v, vWorldPosition.v);
 		}
 		else
 		{
-			NewtonAddBodyImpulse(mpNewtonBody, avImpulse.v, GetWorldPosition().v);
+			NewtonBodyAddImpulse(mpNewtonBody, avImpulse.v, GetWorldPosition().v);
 		}
 	}
 	void cPhysicsBodyNewton::AddImpulseAtPosition(const cVector3f &avImpulse, const cVector3f &avPos)
 	{
-		NewtonAddBodyImpulse(mpNewtonBody, avImpulse.v, avPos.v);
+		NewtonBodyAddImpulse(mpNewtonBody, avImpulse.v, avPos.v);
 	}
 
 	//-----------------------------------------------------------------------
@@ -317,24 +318,24 @@ namespace hpl {
 	void cPhysicsBodyNewton::SetEnabled(bool abEnabled)
 	{
 		if (abEnabled)
-			NewtonWorldUnfreezeBody(mpNewtonWorld, mpNewtonBody);
+			NewtonBodySetFreezeState(mpNewtonBody, 0);
 		else
-			NewtonWorldFreezeBody(mpNewtonWorld, mpNewtonBody);
+			NewtonBodySetFreezeState(mpNewtonBody, 1);
 	}
 	bool cPhysicsBodyNewton::GetEnabled() const
 	{
-		return NewtonBodyGetSleepingState(mpNewtonBody) ==0?false: true;
+		return NewtonBodyGetSleepState(mpNewtonBody) ==0? true: false;
 	}
 
 	//-----------------------------------------------------------------------
 
 	void cPhysicsBodyNewton::SetAutoDisable(bool abEnabled)
 	{
-		NewtonBodySetAutoFreeze(mpNewtonBody, abEnabled ? 1 : 0);
+		NewtonBodySetAutoSleep(mpNewtonBody, abEnabled ? 1 : 0);
 	}
 	bool cPhysicsBodyNewton::GetAutoDisable() const
 	{
-		return NewtonBodyGetAutoFreeze(mpNewtonBody) == 0 ? false : true;
+		return NewtonBodyGetAutoSleep(mpNewtonBody) == 0 ? false : true;
 	}
 
 	//-----------------------------------------------------------------------
@@ -342,8 +343,8 @@ namespace hpl {
 	void cPhysicsBodyNewton::SetAutoDisableLinearThreshold(float afThresold)
 	{
 		mfAutoDisableLinearThreshold = afThresold;
-		NewtonBodySetFreezeTreshold(mpNewtonBody, mfAutoDisableLinearThreshold,
-			mfAutoDisableAngularThreshold, mlAutoDisableNumSteps);
+		// NewtonBodySetFreezeTreshold(mpNewtonBody, mfAutoDisableLinearThreshold,
+		// 	mfAutoDisableAngularThreshold, mlAutoDisableNumSteps);
 	}
 	float cPhysicsBodyNewton::GetAutoDisableLinearThreshold() const
 	{
@@ -355,8 +356,8 @@ namespace hpl {
 	void cPhysicsBodyNewton::SetAutoDisableAngularThreshold(float afThresold)
 	{
 		mfAutoDisableAngularThreshold = afThresold;
-		NewtonBodySetFreezeTreshold(mpNewtonBody, mfAutoDisableLinearThreshold,
-			mfAutoDisableAngularThreshold, mlAutoDisableNumSteps);
+		// NewtonBodySetFreezeTreshold(mpNewtonBody, mfAutoDisableLinearThreshold,
+		// 	mfAutoDisableAngularThreshold, mlAutoDisableNumSteps);
 	}
 	float cPhysicsBodyNewton::GetAutoDisableAngularThreshold() const
 	{
@@ -368,8 +369,8 @@ namespace hpl {
 	void cPhysicsBodyNewton::SetAutoDisableNumSteps(int anNum)
 	{
 		mlAutoDisableNumSteps = anNum;
-		NewtonBodySetFreezeTreshold(mpNewtonBody, mfAutoDisableLinearThreshold,
-			mfAutoDisableAngularThreshold, mlAutoDisableNumSteps);
+		// NewtonBodySetFreezeTreshold(mpNewtonBody, mfAutoDisableLinearThreshold,
+		// 	mfAutoDisableAngularThreshold, mlAutoDisableNumSteps);
 	}
 
 	int cPhysicsBodyNewton::GetAutoDisableNumSteps() const
@@ -408,7 +409,7 @@ namespace hpl {
 
 	////////////////////////////////////////////
 
-	static void RenderDebugPolygon(const NewtonBody* apNewtonBody,
+	static void RenderDebugPolygon(void *apUserData,
 		int alVertexCount, const dFloat* apFaceVertex, int alId)
 	{
 		int i;
@@ -429,9 +430,15 @@ namespace hpl {
 
 	void cPhysicsBodyNewton::RenderDebugGeometry(iLowLevelGraphics *apLowLevel,const cColor &aColor)
 	{
+		cMatrixf mtx= GetLocalMatrix().GetTranspose();
+		cCollideShapeNewton *pNewtonShape = static_cast<cCollideShapeNewton*>(mpShape);
 		gpLowLevelGraphics = apLowLevel;
 		gDebugColor = aColor;
-		NewtonBodyForEachPolygonDo (mpNewtonBody, RenderDebugPolygon);
+
+		NewtonCollisionForEachPolygonDo (pNewtonShape->GetNewtonCollision(),
+										 &mtx.m[0][0],
+										 RenderDebugPolygon,
+										 NULL);
 	}
 
 	//-----------------------------------------------------------------------
@@ -452,7 +459,9 @@ namespace hpl {
 	//-----------------------------------------------------------------------
 
 
-	void cPhysicsBodyNewton::OnTransformCallback(const NewtonBody* apBody, const dFloat* apMatrix)
+	void cPhysicsBodyNewton::OnTransformCallback(const NewtonBody* apBody,
+												 const dFloat*	   apMatrix,
+												 int			   alThreadIndex)
 	{
 		cPhysicsBodyNewton* pRigidBody = (cPhysicsBodyNewton*) NewtonBodyGetUserData(apBody);
 
@@ -479,7 +488,9 @@ namespace hpl {
 		return 1;
 	}
 
-	void cPhysicsBodyNewton::OnUpdateCallback(const NewtonBody* apBody)
+	void cPhysicsBodyNewton::OnUpdateCallback(const NewtonBody* apBody,
+											  dFloat			afTimestep,
+											  int				alThreadIndex)
 	{
 		float fMass;
 		float fX,fY,fZ;
