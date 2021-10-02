@@ -857,7 +857,7 @@ dgCollisionCompoundBreakable::dgCollisionCompoundBreakable (const dgCollisionCom
 
 	m_visibilityInderectMap = (dgInt32 *) m_allocator->Malloc (source.m_visibilityMapIndexCount * dgInt32 (sizeof (dgInt32)));
 	memcpy (m_visibilityInderectMap, source.m_visibilityInderectMap, size_t (source.m_visibilityMapIndexCount * dgInt32 (sizeof (dgInt32))));
-	
+
 
 	m_vertexBuffer = source.m_vertexBuffer;
 	m_vertexBuffer->AddRef();
@@ -869,7 +869,7 @@ dgCollisionCompoundBreakable::dgCollisionCompoundBreakable (const dgCollisionCom
 	for (dgDebriGraph::dgListNode* node = source.m_conectivity.GetFirst()->GetNext(); node != source.m_conectivity.GetLast(); myNode = myNode->GetNext(), node = node->GetNext() ) {
 		 dgCompoundBreakableFilterData info;
 		 dgDebriNodeInfo& nodeInfo = node->GetInfo().m_nodeData;
-		 		
+
 		 info.m_index = stack;
 		 info.m_node = myNode;
 		 graphNodeMap.Insert (info, nodeInfo.m_shape);

@@ -515,7 +515,7 @@ void dgCollisionMesh::dgCollisionConvexPolygon::BeamClipping (const dgCollisionC
 	dgVector points[sizeof (m_localPoly) / sizeof (m_localPoly[0]) + 8];
 	DG_CLIPPED_FACE_EDGE clippedFace [sizeof (m_localPoly) / sizeof (m_localPoly[0]) + 8];
 
-	dgVector origin (matrix.UnrotateVector (matrix.m_posit.Scale (dgFloat32 (-1.0f))));	
+	dgVector origin (matrix.UnrotateVector (matrix.m_posit.Scale (dgFloat32 (-1.0f))));
 	dgVector dir (m_localPoly[1] - m_localPoly[0]);
 
 	_ASSERTE ((dir % dir) > dgFloat32 (1.0e-8f));

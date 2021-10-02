@@ -933,7 +933,7 @@ void dgMeshEffect::RemoveUnusedVertices(dgInt32* const vertexMap)
 
 	m_pointCount = vertexCount;
 	memcpy (&m_points[0].m_x, &points[0].m_x, m_pointCount * sizeof (dgVector));
-	
+
 	m_atribCount = attribCount;
 	memcpy (&m_attib[0].m_vertex.m_x, &atributes[0].m_vertex.m_x, m_atribCount * sizeof (dgVertexAtribute));
 

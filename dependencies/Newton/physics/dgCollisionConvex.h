@@ -39,7 +39,7 @@ class dgConvexSimplexEdge
 DG_MSC_VECTOR_ALIGMENT
 class dgCollisionConvex: public dgCollision
 {
-	bool RayHitBox (const dgVector& localP0, const dgVector& localP1) const; 
+	bool RayHitBox (const dgVector& localP0, const dgVector& localP1) const;
 	dgInt32 RayCastClosestFace (dgVector* tetrahedrum, const dgVector& origin, dgFloat32& pointDist) const;
 
 

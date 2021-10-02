@@ -227,7 +227,7 @@ class dgTriplex
 class dgVector;
 
 #if (defined (_WIN_32_VER) || defined (_WIN_64_VER))
-	#define dgApi __cdecl 
+	#define dgApi __cdecl
 
 	#ifdef _WIN_64_VER
 		#define dgNaked
@@ -235,7 +235,7 @@ class dgVector;
 		#define dgNaked  __declspec (naked)
 	#endif
 #else
-	#define dgApi 
+	#define dgApi
 	#define dgNaked
 #endif
 

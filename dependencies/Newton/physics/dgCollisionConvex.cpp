@@ -398,7 +398,7 @@ void dgCollisionConvex::CalcAABBSimd (const dgMatrix &matrix, dgVector& p0, dgVe
 	tmp = simd_mul_add_v (
 			simd_mul_add_v (
 				simd_mul_add_v ((simd_type&) m_aabb_padd, (simd_type&) m_size_x, simd_and_v((simd_type&) m_signMask, (simd_type&) matrix[0])),
-														  (simd_type&) m_size_y, simd_and_v((simd_type&) m_signMask, (simd_type&) matrix[1])),		
+														  (simd_type&) m_size_y, simd_and_v((simd_type&) m_signMask, (simd_type&) matrix[1])),
 														  (simd_type&) m_size_z, simd_and_v((simd_type&) m_signMask, (simd_type&) matrix[2]));
 
 

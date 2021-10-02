@@ -149,7 +149,7 @@ void dgBilateralConstraint::SetPivotAndPinDir (const dgVector& pivot, const dgVe
 	m_localMatrix0.m_right.m_w = dgFloat32 (0.0f);
 	m_localMatrix0.m_posit.m_w = dgFloat32 (1.0f);
 
-	
+
 //	dgMatrix body1_Matrix (dgGetIdentityMatrix());
 //	if (m_body1) {
 //		body1_Matrix = m_body1->GetMatrix();

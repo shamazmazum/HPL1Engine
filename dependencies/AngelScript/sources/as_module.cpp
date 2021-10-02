@@ -230,7 +230,7 @@ int asCModule::CallInit()
 										 func->GetLineNumber(0) >> 20,
 										 asMSGTYPE_ERROR,
 										 msg.AddressOf());
-										
+
 					if( r == asEXECUTION_EXCEPTION )
 					{
 						int funcId = ctx->GetExceptionFunction();

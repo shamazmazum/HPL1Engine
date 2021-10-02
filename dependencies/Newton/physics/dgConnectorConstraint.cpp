@@ -129,14 +129,14 @@ dgUnsigned32 dgConnectorConstraint::JacobianDerivative (dgContraintDescritor& pa
 		jacobian10[0].derivative[3] = -mat0.front.m_x;
 		jacobian10[0].derivative[4] = -mat0.front.m_y;
 		jacobian10[0].derivative[5] = -mat0.front.m_z;
-				
+
 		jacobian10[1].derivative[0] = 0.0f;
 		jacobian10[1].derivative[1] = 0.0f;
 		jacobian10[1].derivative[2] = 0.0f;
 		jacobian10[1].derivative[3] = -mat0.up.m_x;
 		jacobian10[1].derivative[4] = -mat0.up.m_y;
 		jacobian10[1].derivative[5] = -mat0.up.m_z;
-				
+
 		jacobian10[2].derivative[0] = 0.0f;
 		jacobian10[2].derivative[1] = 0.0f;
 		jacobian10[2].derivative[2] = 0.0f;
