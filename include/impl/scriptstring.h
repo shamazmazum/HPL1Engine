@@ -27,20 +27,21 @@ class asCScriptString
 public:
 	asCScriptString();
 	asCScriptString(const asCScriptString &other);
-	asCScriptString(const char *s);
+	asCScriptString(const char *s, unsigned int len);
 	asCScriptString(const std::string &s);
 
-	void AddRef();
-	void Release();
+	void AddRef() const;
+	void Release() const;
 
 	asCScriptString &operator=(const asCScriptString &other);
 	asCScriptString &operator+=(const asCScriptString &other);
+	friend asCScriptString *operator+(const asCScriptString &a, const asCScriptString &b);
 
 	std::string buffer;
 
 protected:
 	~asCScriptString();
-	int refCount;
+	mutable int refCount;
 };
 
 // This function will determine the configuration of the engine
@@ -54,6 +55,9 @@ void RegisterScriptString_Native(asIScriptEngine *engine);
 // Use this one instead if native calling conventions
 // are not supported on the target platform
 void RegisterScriptString_Generic(asIScriptEngine *engine);
+
+// This function will register utility functions for the script string
+void RegisterScriptStringUtils(asIScriptEngine *engine);
 
 END_AS_NAMESPACE
 
