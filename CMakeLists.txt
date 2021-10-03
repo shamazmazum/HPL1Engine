@@ -35,16 +35,6 @@ find_package(OpenGL REQUIRED)
 #find_package(Devil REQUIRED)
 find_package(GLEW REQUIRED)
 
-include_directories(
-	${CMAKE_CURRENT_SOURCE_DIR}/include
-	${CMAKE_CURRENT_SOURCE_DIR}/dependencies/OALWrapper/include
-        ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/AngelScript/include
-        ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/Newton/include
-        ${SDL_TTF_INCLUDE}
-        ${SDL_IMAGE_INCLUDE}
-        ${GLEW_INCLUDE_DIRS}
-        ${OPENGL_INCLUDE_DIR}
-)
 file(GLOB_RECURSE all_sources
     ${CMAKE_CURRENT_SOURCE_DIR}/sources/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/sources/*.c
@@ -59,6 +49,18 @@ list(REMOVE_ITEM all_sources
 list(REMOVE_DUPLICATES all_sources)
 
 add_library(HPL STATIC ${all_sources})
+
+target_include_directories (HPL
+  PUBLIC ${CMAKE_SOURCE_DIR}/include
+  PRIVATE ${CMAKE_SOURCE_DIR}/dependencies/OALWrapper/include
+  PRIVATE ${CMAKE_SOURCE_DIR}/dependencies/AngelScript/include
+  PRIVATE ${CMAKE_SOURCE_DIR}/dependencies/Newton/include
+  PRIVATE ${SDL_TTF_INCLUDE}
+  PRIVATE ${SDL_IMAGE_INCLUDE}
+  PRIVATE ${GLEW_INCLUDE_DIRS}
+  PRIVATE ${OPENGL_INCLUDE_DIR}
+)
+
 target_link_libraries(HPL
   OALWrapper
   Newton
@@ -68,3 +70,5 @@ target_link_libraries(HPL
   ${GLEW_LIBRARIES}
   ${OPENGL_gl_LIBRARY}
   ${OPENGL_glu_LIBRARY})
+
+add_subdirectory(tests)
