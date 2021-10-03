@@ -4,8 +4,9 @@ project (HPL)
 set(HPL_VERSION_MAJOR 1)
 set(HPL_VERSION_MINOR 0)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-switch -Wno-undefined-var-template")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-switch -Wno-undefined-var-template ")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-ignored-attributes -Wno-extern-c-compat")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-delete-abstract-non-virtual-dtor")
 set(CMAKE_CXX_FLAGS_RELEASE "-fno-strict-aliasing")
 
 option(USE_SDL2 "Use SDL2 instead of SDL1.2" OFF)

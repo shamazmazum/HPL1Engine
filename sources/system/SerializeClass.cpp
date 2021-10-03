@@ -70,15 +70,13 @@ namespace hpl {
 		mpSavedClass = apTopClass;
 
 		//Make sure that the first field type is not null
-		if(mpSavedClass && mpSavedClass->mpMemberFields[mlFieldNum].mType == eSerializeType_NULL)
-		{
-			if(mpSavedClass->msParentName!="")
-			{
-				cSerializeSavedClass *pClass = cSerializeClass::GetClass(mpSavedClass->msParentName);
-				if(pClass) {
-					mpSavedClass = pClass;
-					mlFieldNum =0;
-				}
+		if(mpSavedClass != nullptr &&
+		   mpSavedClass->mpMemberFields[mlFieldNum].mType == eSerializeType_NULL &&
+		   !std::string(mpSavedClass->msParentName).empty()) {
+			cSerializeSavedClass *pClass = cSerializeClass::GetClass(mpSavedClass->msParentName);
+			if(pClass) {
+				mpSavedClass = pClass;
+				mlFieldNum =0;
 			}
 		}
 	}
@@ -103,15 +101,12 @@ namespace hpl {
 		cSerializeMemberField *pField = &mpSavedClass->mpMemberFields[mlFieldNum];
 		mlFieldNum++;
 
-		if(mpSavedClass->mpMemberFields[mlFieldNum].mType == eSerializeType_NULL)
-		{
-			if(mpSavedClass->msParentName!="")
-			{
-				cSerializeSavedClass *pClass = cSerializeClass::GetClass(mpSavedClass->msParentName);
-				if(pClass) {
-					mpSavedClass = pClass;
-					mlFieldNum =0;
-				}
+		if(mpSavedClass->mpMemberFields[mlFieldNum].mType == eSerializeType_NULL &&
+		   !std::string(mpSavedClass->msParentName).empty()) {
+			cSerializeSavedClass *pClass = cSerializeClass::GetClass(mpSavedClass->msParentName);
+			if(pClass) {
+				mpSavedClass = pClass;
+				mlFieldNum =0;
 			}
 		}
 
