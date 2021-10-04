@@ -9,9 +9,15 @@
 #include "OALWrapper/OAL_Source.h"
 #include "OALWrapper/OAL_Device.h"
 
+#ifdef USE_SDL2
+#include <SDL2/SDL_thread.h>
+#include <SDL2/SDL_timer.h>
+#include <SDL2/SDL_version.h>
+#else
 #include <SDL/SDL_thread.h>
 #include <SDL/SDL_timer.h>
 #include <SDL/SDL_version.h>
+#endif
 
 //-----------------------------------------------------------------------------------
 

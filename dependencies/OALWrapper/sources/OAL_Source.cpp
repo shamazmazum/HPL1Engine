@@ -13,7 +13,6 @@
 	Wrapping for OpenAL Source Objects
 */
 
-
 #include "OALWrapper/OAL_Source.h"
 #include "OALWrapper/OAL_Buffer.h"
 #include "OALWrapper/OAL_Sample.h"
@@ -25,7 +24,11 @@
 #include "OALWrapper/OAL_Helper.h"
 #include "OALWrapper/OAL_SourceManager.h"
 
+#ifdef USE_SDL2
+#include <SDL2/SDL_mutex.h>
+#else
 #include <SDL/SDL_mutex.h>
+#endif
 
 //--------------------------------------------------------------------------------
 

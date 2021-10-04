@@ -21,8 +21,14 @@
 
 #include <GL/glew.h>
 
+#ifdef USE_SDL2
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
+#else
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
+#endif
+
 // Unix's X11 Defines DestoryAll which collides with methods
 #undef DestroyAll
 

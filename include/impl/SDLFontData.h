@@ -21,8 +21,13 @@
 
 #include "graphics/FontData.h"
 
+#ifdef USE_SDL2
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
+#else
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
+#endif
 
 namespace hpl {
 

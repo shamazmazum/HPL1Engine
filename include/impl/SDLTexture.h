@@ -30,8 +30,12 @@
 #else
 #include <GL/glu.h>
 #endif
-#include "SDL/SDL.h"
 
+#ifdef USE_SDL2
+#include "SDL2/SDL.h"
+#else
+#include "SDL/SDL.h"
+#endif
 
 namespace hpl {
 

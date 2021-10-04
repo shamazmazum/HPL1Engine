@@ -10,7 +10,11 @@
 #include "OALWrapper/OAL_Helper.h"
 #include "OALWrapper/OAL_EFXManager.h"
 
+#ifdef USE_SDL2
+#include <SDL2/SDL_mutex.h>
+#else
 #include <SDL/SDL_mutex.h>
+#endif
 
 cOAL_EffectSlot::cOAL_EffectSlot( cOAL_EFXManager* apEFXManager, int alId) : iOAL_LowLevelObject("EffectSlot"),
 																			  mlId(alId),
