@@ -693,7 +693,7 @@ namespace hpl {
 
 	void SetWindowCaption(const tString &asName)
 	{
-		SDL_WM_SetCaption(asName.c_str(),"");
+		//SDL_WM_SetCaption(asName.c_str(),"");
 	}
 
 	//-----------------------------------------------------------------------

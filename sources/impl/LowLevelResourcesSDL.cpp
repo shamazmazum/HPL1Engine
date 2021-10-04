@@ -87,8 +87,13 @@ namespace hpl {
 		if (tType=="bmp") {
 			#if SDL_BYTEORDER == SDL_BIG_ENDIAN
 			SDL_PixelFormat RGBAFormat;
-			RGBAFormat.palette = 0; RGBAFormat.colorkey = 0; RGBAFormat.alpha = 0;
-			RGBAFormat.BitsPerPixel = 32; RGBAFormat.BytesPerPixel = 4;
+			RGBAFormat.palette = 0;
+			RGBAFormat.BitsPerPixel = 32;
+			RGBAFormat.BytesPerPixel = 4;
+#if !defined(USE_SDL2)
+			RGBAFormat.colorkey = 0;
+			RGBAFormat.alpha = 0;
+#endif
 
 			RGBAFormat.Rmask = 0xFF000000; RGBAFormat.Rshift = 0; RGBAFormat.Rloss = 0;
 			RGBAFormat.Gmask = 0x00FF0000; RGBAFormat.Gshift = 8; RGBAFormat.Gloss = 0;

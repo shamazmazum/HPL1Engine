@@ -69,8 +69,10 @@ namespace hpl {
 			mSDLPixelFmt32.Bloss=0;
 			mSDLPixelFmt32.Aloss=0;
 
+#if !defined(USE_SDL2)
 			mSDLPixelFmt32.colorkey =0;
 			mSDLPixelFmt32.alpha = 255;
+#endif
 			////// END - PIXEL FORMAT 32 bit RGBA ////////
 
 

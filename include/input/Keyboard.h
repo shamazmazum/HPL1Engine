@@ -49,10 +49,6 @@ namespace hpl {
 		 */
 		virtual bool KeyIsPressed()=0;
 		/**
-		 * \return The current modifiers.
-		 */
-		virtual eKeyModifier GetModifier()=0;
-		/**
 		 * \todo Implement!
 		 * \param eKey The key to change to string.
 		 * \return The name of the key as a string.

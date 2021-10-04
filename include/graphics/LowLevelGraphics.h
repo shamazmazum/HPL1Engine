@@ -229,6 +229,8 @@ namespace hpl {
 		 */
 		virtual void ShowCursor(bool abX)=0;
 
+		virtual void SetWindowGrab(bool abX)=0;
+
 		virtual int GetMultisampling()=0;
 		/**
 		 * Get Size of screen

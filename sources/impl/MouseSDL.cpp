@@ -80,6 +80,9 @@ namespace hpl {
 
 			if(	pEvent->type != SDL_MOUSEMOTION &&
 				pEvent->type != SDL_MOUSEBUTTONDOWN &&
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+				pEvent->type != SDL_MOUSEWHEEL &&
+#endif
 				pEvent->type != SDL_MOUSEBUTTONUP)
 			{
 				continue;
@@ -97,6 +100,19 @@ namespace hpl {
 				if(buttonState & SDL_BUTTON(2)) mvMButtonArray[eMButton_Middle] = true;
 				if(buttonState & SDL_BUTTON(3)) mvMButtonArray[eMButton_Right] = true;*/
 			}
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+			else if(pEvent->type == SDL_MOUSEWHEEL)
+			{
+				if (pEvent->wheel.y > 0) {
+					mvMButtonArray[eMButton_WheelUp] = true;
+					mbWheelUpMoved = true;
+				} else {
+					mvMButtonArray[eMButton_WheelDown] = true;
+					mbWheelDownMoved = true;
+				}
+				break;
+			}
+#endif
 			else
 			{
 				bool bButtonIsDown = pEvent->type==SDL_MOUSEBUTTONDOWN;
@@ -108,6 +124,7 @@ namespace hpl {
 					case SDL_BUTTON_LEFT: mvMButtonArray[eMButton_Left] = bButtonIsDown;break;
 					case SDL_BUTTON_MIDDLE: mvMButtonArray[eMButton_Middle] = bButtonIsDown;break;
 					case SDL_BUTTON_RIGHT: mvMButtonArray[eMButton_Right] = bButtonIsDown;break;
+#if !SDL_VERSION_ATLEAST(2, 0, 0)
 					case SDL_BUTTON_WHEELUP:
 						mvMButtonArray[eMButton_WheelUp] = bButtonIsDown;
 						if(bButtonIsDown) mbWheelUpMoved = true;
@@ -116,6 +133,7 @@ namespace hpl {
 						mvMButtonArray[eMButton_WheelDown] = bButtonIsDown;
 						if(bButtonIsDown) mbWheelDownMoved = true;
 						break;
+#endif
 				}
 			}
 		}

@@ -52,6 +52,62 @@ namespace hpl {
 		return sTemp;
 	}
 
+	tWString cString::UTF8ToWChar(const tString& asString)
+	{
+		tWString sTemp;
+
+		const char *pCur = asString.c_str();
+		const char *pEnd = pCur + asString.size();
+
+		while (pCur < pEnd) {
+			uint32_t uTemp;
+			if ( (*pCur & 0x80) == 0 ) {
+				uTemp = pCur[0];
+				pCur+=1;
+			}
+			else if ( (*pCur & 0xe0) == 0xc0 ) {
+				uTemp = (pCur[0] & 0x1f) << 6 |
+						(pCur[1] & 0x3f);
+				pCur+=2;
+			}
+			else if ( (*pCur & 0xf0) == 0xe0 ) {
+				uTemp = (pCur[0] & 0x0f) << 12 |
+						(pCur[1] & 0x3f) << 6 |
+						(pCur[2] & 0x3f);
+				pCur+=3;
+			}
+#if SIZEOF_WCHAR == 4
+			else if ( (*pCur & 0xf8) == 0xf0 ) {
+				uTemp = (pCur[0] & 0x07) << 18 |
+						(pCur[1] & 0x3f) << 12 |
+						(pCur[2] & 0x3f) << 6 |
+						(pCur[3] & 0x3f);
+				pCur+=4;
+			}
+			else if ( (*pCur & 0xfc) == 0xf8 ) {
+				uTemp = (pCur[0] & 0x03) << 24 |
+						(pCur[1] & 0x3f) << 18 |
+						(pCur[2] & 0x3f) << 12 |
+						(pCur[3] & 0x3f) << 6 |
+						(pCur[4] & 0x3f);
+				pCur+=5;
+			}
+			else if ( (*pCur & 0xfe) == 0xfc ) {
+				uTemp = (pCur[0] & 0x01) << 30 |
+						(pCur[1] & 0x3f) << 24 |
+						(pCur[2] & 0x3f) << 18 |
+						(pCur[3] & 0x3f) << 12 |
+						(pCur[4] & 0x3f) << 6 |
+						(pCur[5] & 0x3f);
+				pCur+=6;
+			}
+#endif
+			sTemp.push_back((wchar_t)uTemp);
+		}
+
+		return sTemp;
+	}
+
 	//-----------------------------------------------------------------------
 
 	tWString cString::Get16BitFromArray(const tString &asArray)

@@ -47,8 +47,8 @@ namespace hpl
 
 	bool cActionKeyboard::IsTriggerd()
 	{
-		return mpInput->GetKeyboard()->KeyIsDown(mKey) &&
-			( (mpInput->GetKeyboard()->GetModifier() & mMod) > 0 || mMod == eKeyModifier_NONE);
+		return mpInput->GetKeyboard()->KeyIsDown(mKey);
+		// && ( (mpInput->GetKeyboard()->GetModifier() & mMod) > 0 || mMod == eKeyModifier_NONE);
 	}
 	//-----------------------------------------------------------------------
 

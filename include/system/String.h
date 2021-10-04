@@ -41,6 +41,11 @@ namespace hpl {
 		static tString To8Char(const tWString &awsString);
 
 		/**
+		 *
+		 */
+		static tWString UTF8ToWChar(const tString &asString);
+
+		/**
 		 * Gets a 16 bit string from an string of numbers
 		 */
 		static tWString Get16BitFromArray(const tString &asArray);

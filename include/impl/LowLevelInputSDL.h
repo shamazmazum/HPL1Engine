@@ -21,6 +21,7 @@
 
 #include <list>
 #include "input/LowLevelInput.h"
+#include "graphics/LowLevelGraphics.h"
 
 #ifdef USE_SDL2
 #include "SDL2/SDL.h"
@@ -29,8 +30,6 @@
 #endif
 
 namespace hpl {
-
-	class iLowLevelGraphics;
 
 	class cLowLevelInputSDL : public iLowLevelInput
 	{

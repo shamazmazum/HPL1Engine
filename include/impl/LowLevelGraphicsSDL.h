@@ -62,6 +62,8 @@ namespace hpl {
 
 		void ShowCursor(bool abX);
 
+		void SetWindowGrab(bool abX);
+
 		void SetVsyncActive(bool abX);
 
 		void SetMultisamplingActive(bool abX);
@@ -266,7 +268,12 @@ namespace hpl {
 		cPlanef mvClipPlanes[kMaxClipPlanes];
 
 		//SDL Variables
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+		SDL_Window *mpScreen;
+		SDL_GLContext mGLContext;
+#else
 		SDL_Surface *mpScreen;
+#endif
 		cSDLPixelFormat *mpPixelFormat;
 
 		//Vertex Array variables

@@ -41,7 +41,7 @@ namespace hpl {
 		bool KeyIsDown(eKey aKey);
 		cKeyPress GetKey();
 		bool KeyIsPressed();
-		eKeyModifier GetModifier();
+		// eKeyModifier GetModifier();
 		tString KeyToString(eKey);
 		eKey StringToKey(tString);
 
@@ -49,7 +49,7 @@ namespace hpl {
 		eKey SDLToKey(int alKey);
 		void ClearKeyList();
 		eKey AsciiToKey(int alChar);
-		eKeyModifier mModifier;
+        void AddKeyToList(int alSDLMod, eKey aKey, int alUnicode, std::list<cKeyPress>& alstKeys);
 
 		std::vector<bool> mvKeyArray;
 

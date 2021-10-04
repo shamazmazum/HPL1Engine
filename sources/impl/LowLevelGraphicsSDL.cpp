@@ -138,7 +138,9 @@ namespace hpl {
 		//#endif
 
 
+#if !SDL_VERSION_ATLEAST(2, 0, 0)
 		SDL_SetGammaRamp(mvStartGammaArray[0],mvStartGammaArray[1],mvStartGammaArray[2]);
+#endif
 
 		hplFree(mpVertexArray);
 		hplFree(mpIndexArray);
@@ -149,6 +151,10 @@ namespace hpl {
 		//Exit extra stuff
 		ExitCG();
 		TTF_Quit();
+
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+		SDL_DestroyWindow(mpScreen);
+#endif
 	}
 
 	//-----------------------------------------------------------------------
@@ -195,6 +201,31 @@ namespace hpl {
 			}
 		}
 
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+		unsigned int mlFlags = SDL_WINDOW_OPENGL;
+		if (alWidth == 0 && alHeight == 0) {
+			mvScreenSize = cVector2l(800,600);
+			mlFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+		} else if (abFullscreen) {
+			mlFlags |= SDL_WINDOW_FULLSCREEN;
+		}
+
+		Log(" Setting video mode: %d x %d - %d bpp\n", alWidth, alHeight, alBpp);
+		mpScreen = SDL_CreateWindow(asWindowCaption.c_str(),
+									SDL_WINDOWPOS_CENTERED,
+									SDL_WINDOWPOS_CENTERED,
+									mvScreenSize.x, mvScreenSize.y, mlFlags);
+		if(mpScreen==NULL) {
+			FatalError("Unable to initialize display! %s\n", SDL_GetError());
+			return false;
+		}
+
+		// update with the screen size ACTUALLY obtained
+		int w,h;
+		SDL_GetWindowSize(mpScreen, &w, &h);
+		mvScreenSize = cVector2l(w, h);
+		mGLContext = SDL_GL_CreateContext(mpScreen);
+#else
 		unsigned int mlFlags = SDL_OPENGL;
 
 		if(abFullscreen) mlFlags |= SDL_FULLSCREEN;
@@ -221,6 +252,7 @@ namespace hpl {
 		{
 			SetWindowCaption(asWindowCaption);
 		}
+#endif
 
 		Log(" Init Glew...");
 		if(glewInit() == GLEW_OK)
@@ -250,16 +282,23 @@ namespace hpl {
 
 		//Gamma
 		mfGammaCorrection = 1.0f;
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+		SDL_SetWindowBrightness(mpScreen, mfGammaCorrection);
+#else
 		SDL_GetGammaRamp(mvStartGammaArray[0],mvStartGammaArray[1],mvStartGammaArray[2]);
-
 		SDL_SetGamma(mfGammaCorrection,mfGammaCorrection,mfGammaCorrection);
+#endif
 
 		//GL
 		Log(" Setting up OpenGL\n");
 		SetupGL();
 
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+		SDL_GL_SwapWindow(mpScreen);
+#else
 		//Set the clear color
 		SDL_GL_SwapBuffers();
+#endif
 
 		return true;
 	}
@@ -420,19 +459,34 @@ namespace hpl {
 
 	//-----------------------------------------------------------------------
 
+	void cLowLevelGraphicsSDL::SetWindowGrab(bool abX)
+	{
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+		if (mpScreen) {
+			SDL_SetWindowGrab(mpScreen, abX ? SDL_TRUE : SDL_FALSE);
+		}
+#else
+		SDL_WM_GrabInput(abX ? SDL_GRAB_ON : SDL_GRAB_OFF);
+#endif
+	}
+
+	//-----------------------------------------------------------------------
+
 	void cLowLevelGraphicsSDL::SetVsyncActive(bool abX)
 	{
-		#if defined(WIN32)
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+		SDL_GL_SetSwapInterval(abX? 1 : 0);
+#elif defined(WIN32)
 		if(GLEW_WGL_EXT_swap_control)
 		{
 			wglSwapIntervalEXT(abX ? 1 : 0);
 		}
-		#elif defined(__linux__)
+#elif defined(__linux__)
 		if (GLEW_GLX_SGI_swap_control)
 		{
 			glXSwapIntervalSGI(abX ? 1 : 0);
 		}
-		#endif
+#endif
 	}
 
 	//-----------------------------------------------------------------------
@@ -451,31 +505,13 @@ namespace hpl {
 
 	void cLowLevelGraphicsSDL::SetGammaCorrection(float afX)
 	{
-		//if(mfGammaCorrection == afX) return;
-
 		mfGammaCorrection = afX;
 
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+		SDL_SetWindowBrightness(mpScreen, mfGammaCorrection);
+#else
 		SDL_SetGamma(mfGammaCorrection,mfGammaCorrection,mfGammaCorrection);
-
-		/*Uint16 GammaArray[3][256];
-
-		for (int iIndex = 0; iIndex < 256; iIndex++)
-		{
-			Uint16 iArrayValue = iIndex * ((int)(afX*127.0f) + 128);
-
-			if (iArrayValue > 65535)
-				iArrayValue = 65535;
-
-			GammaArray[0][iIndex] =
-			GammaArray[1][iIndex] =
-			GammaArray[2][iIndex] = iArrayValue;
-
-		}
-
-		//Set the GammaArray values into the display device context.
-		int bReturn = SDL_SetGammaRamp(GammaArray[0],GammaArray[1],GammaArray[2]);*/
-		/*if(bReturn!=-1) Log("Setting gamma worked!\n");
-		else		Log("Setting gamma FAILED!\n");*/
+#endif
 	}
 
 	float cLowLevelGraphicsSDL::GetGammaCorrection()
@@ -867,7 +903,11 @@ namespace hpl {
 	void cLowLevelGraphicsSDL::SwapBuffers()
 	{
 		glFlush();
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+		SDL_GL_SwapWindow(mpScreen);
+#else
 		SDL_GL_SwapBuffers();
+#endif
 	}
 
 	//-----------------------------------------------------------------------

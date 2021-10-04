@@ -25,6 +25,7 @@
 #endif
 
 #include "impl/LowLevelInputSDL.h"
+#include "system/String.h"
 
 #ifdef WIN32
 #include <conio.h>
@@ -45,8 +46,10 @@ namespace hpl {
 		mvKeyArray.resize(eKey_LastEnum);
 		ClearKeyList();
 
+#if !SDL_VERSION_ATLEAST(2, 0, 0)
 		SDL_EnableUNICODE(1);
 		SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
+#endif
 	}
 
 	//-----------------------------------------------------------------------
@@ -63,28 +66,36 @@ namespace hpl {
 		{
 			SDL_Event *pEvent = &(*it);
 
-			if(pEvent->type != SDL_KEYDOWN && pEvent->type != SDL_KEYUP)
+			if(pEvent->type == SDL_KEYDOWN || pEvent->type == SDL_KEYUP)
+#if SDL_VERSION_ATLEAST(2, 0, 0)
 			{
-				continue;
-			}
+				eKey key = SDLToKey(pEvent->key.keysym.sym);
 
-			eKey key = SDLToKey(pEvent->key.keysym.sym);
-			mvKeyArray[key] = pEvent->type == SDL_KEYDOWN?true:false;
-
-			if(pEvent->type == SDL_KEYDOWN)
-			{
+				mvKeyArray[key] = pEvent->key.state == SDL_PRESSED? true: false;
 				int sdl_mod = pEvent->key.keysym.mod;
-				mModifier = eKeyModifier_NONE;
 
-				if(sdl_mod & KMOD_CTRL)		mModifier |= eKeyModifier_CTRL;
-				if(sdl_mod & KMOD_SHIFT)	mModifier |= eKeyModifier_SHIFT;
-				if(sdl_mod & KMOD_ALT)		mModifier |= eKeyModifier_ALT;
-				if(sdl_mod & KMOD_META)		mModifier |= eKeyModifier_META;
-
-				mlstKeysPressed.push_back(cKeyPress(key,pEvent->key.keysym.unicode,mModifier));
-
-				//if(mlstKeysPressed.size()>MAX_KEY_PRESSES) mlstKeysPressed.pop_front();
+				if(pEvent->key.state == SDL_PRESSED) {
+					AddKeyToList(sdl_mod, key, 0, mlstKeysPressed);
+				}
+			} else if(pEvent->type == SDL_TEXTINPUT) {
+				tWString tstr = cString::UTF8ToWChar(pEvent->text.text);
+				for (size_t i=0,l=tstr.size(); i<l; ++i) {
+					AddKeyToList(SDL_GetModState(), eKey_NONE, (int)tstr[i], mlstKeysPressed);
+				}
 			}
+#else
+			{
+				eKey key = SDLToKey(pEvent->key.keysym.sym);
+
+				mvKeyArray[key] = pEvent->type == SDL_KEYDOWN? true: false;
+				int lUnicode = pEvent->key.keysym.unicode;
+				int sdl_mod = pEvent->key.keysym.mod;
+
+				if(pEvent->type == SDL_KEYDOWN) {
+					AddKeyToList(sdl_mod, key, lUnicode, mlstKeysPressed);
+				}
+			}
+#endif
 		}
 	}
 
@@ -114,10 +125,10 @@ namespace hpl {
 
 	//-----------------------------------------------------------------------
 
-	eKeyModifier cKeyboardSDL::GetModifier()
-	{
-		return mModifier;
-	}
+	// eKeyModifier cKeyboardSDL::GetModifier()
+	// {
+	// 	return mModifier;
+	// }
 
 	//-----------------------------------------------------------------------
 
@@ -216,6 +227,18 @@ namespace hpl {
 			case 	SDLK_y: return eKey_y;
 			case 	SDLK_z: return eKey_z;
 			case 	SDLK_DELETE: return eKey_DELETE;
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+			case 	SDLK_KP_0: return eKey_KP0;
+			case 	SDLK_KP_1: return eKey_KP1;
+			case 	SDLK_KP_2: return eKey_KP2;
+			case 	SDLK_KP_3: return eKey_KP3;
+			case 	SDLK_KP_4: return eKey_KP4;
+			case 	SDLK_KP_5: return eKey_KP5;
+			case 	SDLK_KP_6: return eKey_KP6;
+			case 	SDLK_KP_7: return eKey_KP7;
+			case 	SDLK_KP_8: return eKey_KP8;
+			case 	SDLK_KP_9: return eKey_KP9;
+#else
 			case 	SDLK_KP0: return eKey_KP0;
 			case 	SDLK_KP1: return eKey_KP1;
 			case 	SDLK_KP2: return eKey_KP2;
@@ -226,6 +249,7 @@ namespace hpl {
 			case 	SDLK_KP7: return eKey_KP7;
 			case 	SDLK_KP8: return eKey_KP8;
 			case 	SDLK_KP9: return eKey_KP9;
+#endif
 			case 	SDLK_KP_PERIOD: return eKey_KP_PERIOD;
 			case 	SDLK_KP_DIVIDE: return eKey_KP_DIVIDE;
 			case 	SDLK_KP_MULTIPLY: return eKey_KP_MULTIPLY;
@@ -257,27 +281,34 @@ namespace hpl {
 			case 	SDLK_F13: return eKey_F13;
 			case 	SDLK_F14: return eKey_F14;
 			case 	SDLK_F15: return eKey_F15;
-			case 	SDLK_NUMLOCK: return eKey_NUMLOCK;
-			case 	SDLK_CAPSLOCK: return eKey_CAPSLOCK;
-			case 	SDLK_SCROLLOCK: return eKey_SCROLLOCK;
-			case 	SDLK_RSHIFT: return eKey_RSHIFT;
+			case	SDLK_CAPSLOCK: return eKey_CAPSLOCK;
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+			case	SDLK_NUMLOCKCLEAR: return eKey_NUMLOCK;
+			case	SDLK_SCROLLLOCK: return eKey_SCROLLOCK;
+#else
+			case	SDLK_NUMLOCK: return eKey_NUMLOCK;
+			case	SDLK_SCROLLOCK: return eKey_SCROLLOCK;
+#endif
+			case	SDLK_RSHIFT: return eKey_RSHIFT;
 			case 	SDLK_LSHIFT: return eKey_LSHIFT;
 			case 	SDLK_RCTRL: return eKey_RCTRL;
 			case 	SDLK_LCTRL: return eKey_LCTRL;
 			case 	SDLK_RALT: return eKey_RALT;
 			case 	SDLK_LALT: return eKey_LALT;
+#if !SDL_VERSION_ATLEAST(2, 0, 0)
 			case 	SDLK_RMETA: return eKey_RMETA;
 			case 	SDLK_LMETA: return eKey_LMETA;
 			case 	SDLK_LSUPER: return eKey_LSUPER;
 			case 	SDLK_RSUPER: return eKey_RSUPER;
+			case	SDLK_PRINT: return eKey_PRINT;
+			case	SDLK_BREAK: return eKey_BREAK;
+			case	SDLK_EURO: return eKey_EURO;
+#endif
 			case 	SDLK_MODE: return eKey_MODE;
 			case 	SDLK_HELP: return eKey_HELP;
-			case 	SDLK_PRINT: return eKey_PRINT;
 			case 	SDLK_SYSREQ: return eKey_SYSREQ;
-			case 	SDLK_BREAK: return eKey_BREAK;
 			case 	SDLK_MENU: return eKey_MENU;
 			case 	SDLK_POWER: return eKey_POWER;
-			case 	SDLK_EURO: return eKey_EURO;
 		}
 
 		return eKey_NONE;
@@ -292,4 +323,18 @@ namespace hpl {
 
 	//-----------------------------------------------------------------------
 
+	void cKeyboardSDL::AddKeyToList(int alSDLMod, eKey aKey, int alUnicode, std::list<cKeyPress>& alstKeys)
+	{
+		int mod =0;
+
+		if(alSDLMod & KMOD_CTRL)		mod |= eKeyModifier_CTRL;
+		if(alSDLMod & KMOD_SHIFT)		mod |= eKeyModifier_SHIFT;
+		if(alSDLMod & KMOD_ALT)			mod |= eKeyModifier_ALT;
+
+		alstKeys.push_back(cKeyPress(aKey,alUnicode,mod));
+
+		//if(mlstKeysPressed.size()>MAX_KEY_PRESSES) mlstKeysPressed.pop_front();
+	}
+
+	//-----------------------------------------------------------------------
 }
