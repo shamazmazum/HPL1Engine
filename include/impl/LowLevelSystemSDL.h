@@ -77,7 +77,7 @@ namespace hpl {
 
 		iScript* CreateScript(const tString& asName);
 
-		bool AddScriptFunc(const tString& asFuncDecl, void* pFunc, int callConv);
+		bool AddScriptFunc(const tString& asFuncDecl, void* pFunc);
 		bool AddScriptVar(const tString& asVarDecl, void *pVar);
 
 		void Sleep ( const unsigned int alMillisecs );

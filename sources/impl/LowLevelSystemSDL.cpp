@@ -781,11 +781,11 @@ namespace hpl {
 
 	//-----------------------------------------------------------------------
 
-	bool cLowLevelSystemSDL::AddScriptFunc(const tString& asFuncDecl, void* pFunc, int callConv)
+	bool cLowLevelSystemSDL::AddScriptFunc(const tString& asFuncDecl, void* pFunc)
 	{
 		if(mpScriptEngine->RegisterGlobalFunction(asFuncDecl.c_str(),
-												asFUNCTION(pFunc),callConv)<0)
-		{
+												  asFUNCTION(pFunc),
+												  asCALL_STDCALL) < 0) {
 			Error("Couldn't add func '%s'\n",asFuncDecl.c_str());
 			return false;
 		}
