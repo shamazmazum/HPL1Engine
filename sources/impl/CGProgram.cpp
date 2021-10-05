@@ -68,7 +68,7 @@ namespace hpl{
 
 	bool cCGProgram::CreateFromFile(const tString &asFile, const tString &asEntry)
 	{
-		return false;
+		return true;
 	}
 
 	//-----------------------------------------------------------------------
