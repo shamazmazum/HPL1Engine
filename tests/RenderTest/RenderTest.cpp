@@ -110,7 +110,7 @@ public:
 		mpScreenBuffer->SetWrapT(eTextureWrap_ClampToEdge);
 
 		//Load a font
-		mpFont = gpGame->GetResources()->GetFontManager()->CreateFontData("verdana.ttf",12,32,128);
+		mpFont = gpGame->GetResources()->GetFontManager()->CreateFontData("viewer.fnt",12,32,128);
 
 		//2d graphics
 		mpGfxDrawer = gpGame->GetGraphics()->GetDrawer();
