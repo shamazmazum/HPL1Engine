@@ -10,8 +10,6 @@
 
 #include "../Common/SimpleCamera.h"
 
-#pragma comment(lib, "HPL.lib")
-
 using namespace hpl;
 
 cGame *gpGame=NULL;
@@ -165,7 +163,7 @@ private:
 int hplMain(const tString& asCommandLine)
 {
 	//Init the game engine
-	gpGame = new cGame(new cSDLGameSetup(),800,600,32,false,45);
+	gpGame = new cGame(new cSDLGameSetup(),1920, 1080, 32, true, 60);
 	gpGame->GetGraphics()->GetLowLevel()->SetVsyncActive(false);
 
 	//Add resources

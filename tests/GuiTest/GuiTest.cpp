@@ -6,13 +6,9 @@
  * For conditions of distribution and use, see copyright notice in LICENSE-tests
  */
 #include <hpl.h>
-
-
 #include <impl/SDLGameSetup.h>
 
 #include "../Common/SimpleCamera.h"
-
-#include <conio.h>
 
 using namespace hpl;
 

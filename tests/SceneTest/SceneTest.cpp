@@ -8,8 +8,6 @@
 #include <hpl.h>
 #include <impl/SDLGameSetup.h>
 
-#pragma comment(lib, "HPL.lib")
-
 #include "SceneCamera.h"
 
 
@@ -221,12 +219,10 @@ private:
 	int mlTested,mlPreTested;
 };
 
-
-
-int WINAPI WinMain(	HINSTANCE hInstance,  HINSTANCE hPrevInstance,LPSTR	lpCmdLine, int nCmdShow)
+int hplMain(const tString &asCommandline)
 {
 	//Init the game engine
-	gpGame = new cGame(new cSDLGameSetup(),800,600,32,false,45);
+	gpGame = new cGame(new cSDLGameSetup(), 1920, 1080, 32, true, 60);
 	gpGame->GetGraphics()->GetLowLevel()->SetVsyncActive(false);
 
 	//Add resources
@@ -247,4 +243,6 @@ int WINAPI WinMain(	HINSTANCE hInstance,  HINSTANCE hPrevInstance,LPSTR	lpCmdLin
 	//Delete the engine
 	delete gpGame;
 	delete gpCameraUpdate;
+
+    return 0;
 }
