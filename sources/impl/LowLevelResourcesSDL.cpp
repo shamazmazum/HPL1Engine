@@ -152,7 +152,7 @@ namespace hpl {
 
 	void cLowLevelResourcesSDL::AddVideoLoaders(cVideoManager* apManager)
 	{
-		#ifdef INCLUDE_THORA
+		#ifdef INCLUDE_THEORA
 		apManager->AddVideoLoader(hplNew( cVideoStreamTheora_Loader,()));
 		#endif
 	}

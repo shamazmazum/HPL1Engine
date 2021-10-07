@@ -5,16 +5,10 @@
  *
  * For conditions of distribution and use, see copyright notice in LICENSE-tests
  */
-#include <windows.h>
 #include <hpl.h>
 #include <impl/SDLGameSetup.h>
 
 #include "../Common/SimpleCamera.h"
-
-#include <conio.h>
-
-#pragma comment(lib, "libogg.lib")
-#pragma comment(lib, "libtheora.lib")
 
 #include <theora/theora.h>
 
@@ -83,12 +77,12 @@ public:
 		//return;
 		////////////////////////////////
 		//Theora Init
-		msFile = "textures/test_video2.ogm";
+		msFile = "test_video2.ogm";
 
 
 		////////////////////////////////
 		//Theora Setup video texture
-		mpVideoStream = gpGame->GetResources()->GetVideoManager()->CreateVideo("test_video2.ogm");
+		mpVideoStream = gpGame->GetResources()->GetVideoManager()->CreateVideo(msFile);
 		mpVideoStream->Play();
 		mpVideoStream->SetLoop(true);
 

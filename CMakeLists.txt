@@ -35,9 +35,9 @@ add_subdirectory(dependencies/Newton)
 
 set(OpenGL_GL_PREFERENCE LEGACY)
 find_package(OpenGL REQUIRED)
-#find_package(Theora REQUIRED)
 #find_package(Devil REQUIRED)
 find_package(GLEW REQUIRED)
+find_package(Theora)
 
 file(GLOB_RECURSE all_sources
     ${CMAKE_CURRENT_SOURCE_DIR}/sources/*.cpp
@@ -46,7 +46,7 @@ file(GLOB_RECURSE all_sources
 # Removed Sources
 file(GLOB_RECURSE to_remove_all
     win32.cpp
-    Video*Theora.cpp
+#    Video*Theora.cpp
     )
 list(REMOVE_ITEM all_sources
     ${to_remove_all})
@@ -63,6 +63,7 @@ target_include_directories (HPL
   PRIVATE ${SDL_IMAGE_INCLUDE}
   PRIVATE ${GLEW_INCLUDE_DIRS}
   PRIVATE ${OPENGL_INCLUDE_DIR}
+  PRIVATE ${THEORA_INCLUDE_DIR}
 )
 
 target_link_libraries(HPL
@@ -73,11 +74,17 @@ target_link_libraries(HPL
   ${SDL_IMAGE_LIBRARY}
   ${GLEW_LIBRARIES}
   ${OPENGL_gl_LIBRARY}
-  ${OPENGL_glu_LIBRARY})
+  ${OPENGL_glu_LIBRARY}
+  ${THEORA_LIBRARY})
 
 if(USE_SDL2)
   target_compile_definitions(HPL
     PRIVATE USE_SDL2)
 endif(USE_SDL2)
+
+if(THEORA_FOUND)
+  target_compile_definitions(HPL
+    PRIVATE INCLUDE_THEORA)
+endif(THEORA_FOUND)
 
 add_subdirectory(tests)

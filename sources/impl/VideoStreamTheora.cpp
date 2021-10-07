@@ -25,8 +25,10 @@
 #include <stdio.h>
 #include <string.h>
 
+#ifdef WIN32
 #pragma comment(lib, "libogg.lib")
 #pragma comment(lib, "libtheora.lib")
+#endif
 
 namespace hpl {
 
